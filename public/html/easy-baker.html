@@ -47,11 +47,11 @@
       I wrote my own addon to speed up the baking workflow:
       <ol>
         <li>Create your mesh and texture it. Eyeball the UVs to make it look nice. You can even use multiple materials! You will end up with a mesh that looks right, but with messy UVs:</li>
-        <img src="/img/easy-baker/messy-uv.jpg"/>
+        <img src="../img/easy-baker/messy-uv.jpg"/>
         <li>Click "Prepare Unwrap". This puts your mesh into a state where you can immediately start unwrapping it using whichever techniques you like.</li>
-        <img src="/img/easy-baker/unwrap.jpg"/>
+        <img src="../img/easy-baker/unwrap.jpg"/>
         <li>When you're happy with your seams, click "Reapply and Bake". Profit! You now have a nice, clean Albedo with no overlap.</li>
-        <img src="/img/easy-baker/clean-uv.jpg"/>
+        <img src="../img/easy-baker/clean-uv.jpg"/>
       </ol>
     </p>
     <p>It currently only works for Albedo. It also optionally supports alpha masking (this requires some numpy magic since the bake uses an Emission pass to avoid the aforementioned Albedo darkening issues).</p>

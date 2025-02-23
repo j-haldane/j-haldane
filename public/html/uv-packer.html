@@ -32,165 +32,162 @@
     <p>The scripts record the UV coordinates before and after blender packs them, then uses that data to slice apart the original image like a jigsaw into an efficient UV texture.</p>
     <p>It even kind of works! It runs into issues with corners. Also, the script provides no padding for the polygons, so you typically get visible seams on your mesh.</p>
     <p>The lesson learned afterwards: <strong>Blender already does this out of the box</strong>. It's called UV Baking.</p>
-    <a href="/html/easy-baker.html">I've open sourced a small addon that makes the UV baking process much faster!</a>
+    <a href="../html/easy-baker.html">I've open sourced a small addon that makes the UV baking process much faster!</a>
 
     <div class="flr">
       <div class="flc">
          <p>Example input (From Dall-e 3):</p>
-         <img src="/img/uv-packer/raw.png"/>
+         <img src="../img/uv-packer/raw.png"/>
       </div>
       <div class="flc">
          <p>Model (Eyeballed UV projections by hand):</p>
-         <img src="/img/uv-packer/model.png"/>
+         <img src="../img/uv-packer/model.png"/>
       </div>
       <div class="flc">
          <p>The resulting UV packed texture:</p>
-         <img src="/img/uv-packer/out.png"/>
+         <img src="../img/uv-packer/out.png"/>
       </div>
     </div>
     
     <p>The script comes in two parts. One is run in Blender to output the UV coordinates, and the other to do the image slicing which is run as a standalone python script.</p>
     
-    <div class="flr">
-       <div>
-         <h3>bpy Code</h3>
-         <code>
-           import bpy</br>
-            </br>
-           obj = bpy.context.object</br>
-           mat = obj.material_slots[0].material</br>
-           reduceFactor = 1</br>
-           </br>
-           if mat and mat.use_nodes:</br>
-               for node in mat.node_tree.nodes:</br>
-                   if node.type == 'TEX_IMAGE':</br>
-                       original_image = node.image</br>
-                       break</br>
-           </br>
-           tex_w, tex_h = original_image.size</br>
-           </br>
-           def get_mesh_uvs(mesh, factor = 1):</br>
-               uv_layer = mesh.uv_layers.active.data</br>
-               faces = []</br>
-               </br>
-               for poly in mesh.polygons:</br>
-                   uvs = []</br>
-           </br>
-                   # Loop through each vertex in the face</br>
-                   for loop_index in poly.loop_indices:</br>
-                       print(factor)</br>
-                       uvs.append({</br>
-                           "x": int(uv_layer[loop_index].uv.x * (tex_w / factor)),</br>
-                           "y": int(uv_layer[loop_index].uv.y * (tex_h / factor))</br>
-                       })</br>
-                           </br>
-                   </br>
-                   faces.append({</br>
-                       "face": poly.index,</br>
-                       "uvs": uvs</br>
-                   })</br>
-               return faces</br>
-           </br>
-           # Get the UV coordinates before packing</br>
-           mesh = obj.data</br>
-           before_faces = get_mesh_uvs(mesh)</br>
-                                           </br>
-           # pack UV islands</br>
-           bpy.ops.object.mode_set(mode='EDIT')</br>
-           bpy.ops.mesh.select_all(action='SELECT')</br>
-           </br>
-           bpy.ops.uv.pack_islands(</br>
-               rotate=False,</br>
-               margin=0.001,</br>
-               scale=True,</br>
-               merge_overlap=False,</br>
-           )</br>
-           </br>
-           bpy.ops.object.mode_set(mode='OBJECT')</br>
-           </br>
-           </br>
-           after_faces = get_mesh_uvs(mesh, reduceFactor)</br>
-           </br>
-           # dictionary to hold the UV coordinates</br>
-           uv_coords = {</br>
-               "orig_w": tex_w,</br>
-               "orig_h": tex_h,</br>
-               "new_w": int(tex_w / reduceFactor),</br>
-               "new_h": int(tex_h / reduceFactor),</br>
-               "before": before_faces,</br>
-               "after": after_faces</br>
-           }</br>
-           </br>
-           import json</br>
-           </br>
-           print(json.dumps(uv_coords))</br>
+    <div>
+       <h3>bpy Code</h3>
+       <code>
+         import bpy</br>
+          </br>
+         obj = bpy.context.object</br>
+         mat = obj.material_slots[0].material</br>
+         reduceFactor = 1</br>
+         </br>
+         if mat and mat.use_nodes:</br>
+             for node in mat.node_tree.nodes:</br>
+                 if node.type == 'TEX_IMAGE':</br>
+                     original_image = node.image</br>
+                     break</br>
+         </br>
+         tex_w, tex_h = original_image.size</br>
+         </br>
+         def get_mesh_uvs(mesh, factor = 1):</br>
+             uv_layer = mesh.uv_layers.active.data</br>
+             faces = []</br>
+             </br>
+             for poly in mesh.polygons:</br>
+                 uvs = []</br>
+         </br>
+                 # Loop through each vertex in the face</br>
+                 for loop_index in poly.loop_indices:</br>
+                     print(factor)</br>
+                     uvs.append({</br>
+                         "x": int(uv_layer[loop_index].uv.x * (tex_w / factor)),</br>
+                         "y": int(uv_layer[loop_index].uv.y * (tex_h / factor))</br>
+                     })</br>
+                         </br>
+                 </br>
+                 faces.append({</br>
+                     "face": poly.index,</br>
+                     "uvs": uvs</br>
+                 })</br>
+             return faces</br>
+         </br>
+         # Get the UV coordinates before packing</br>
+         mesh = obj.data</br>
+         before_faces = get_mesh_uvs(mesh)</br>
+                                         </br>
+         # pack UV islands</br>
+         bpy.ops.object.mode_set(mode='EDIT')</br>
+         bpy.ops.mesh.select_all(action='SELECT')</br>
+         </br>
+         bpy.ops.uv.pack_islands(</br>
+             rotate=False,</br>
+             margin=0.001,</br>
+             scale=True,</br>
+             merge_overlap=False,</br>
+         )</br>
+         </br>
+         bpy.ops.object.mode_set(mode='OBJECT')</br>
+         </br>
+         </br>
+         after_faces = get_mesh_uvs(mesh, reduceFactor)</br>
+         </br>
+         # dictionary to hold the UV coordinates</br>
+         uv_coords = {</br>
+             "orig_w": tex_w,</br>
+             "orig_h": tex_h,</br>
+             "new_w": int(tex_w / reduceFactor),</br>
+             "new_h": int(tex_h / reduceFactor),</br>
+             "before": before_faces,</br>
+             "after": after_faces</br>
+         }</br>
+         </br>
+         import json</br>
+         </br>
+         print(json.dumps(uv_coords))</br>
+     </code>
+    </div>
+    <div>
+       <h3>Python-only Code</h3>
+       <code>
+          from PIL import Image, ImageDraw </br>
+port json
+
+read json from thingie.json </br>
+th open('coords.json') as json_file: </br>
+  data = json.load(json_file) </br>
+
+w =           data["orig_w"] </br>
+h =           data["orig_h"] </br>
+w =           data["new_w"] </br>
+h =           data["new_h"] </br>
+fore_faces =  data["before"] </br>
+ter_faces =   data["after"] </br>
+
+create a PIL image from the blender image </br>
+l_img = Image.open("unpacked.png") </br>
+
+nal_img = Image.new('RGB', (n_w, n_h)) </br>
+fill final_img with the average color of pil_img </br>
+erage_color = pil_img.resize((1, 1)).resize((n_w, n_h)) </br>
+nal_img.paste(average_color) </br>
+
+r before_face, after_face in zip(before_faces, after_faces): </br>
+    
+  mask = Image.new("L", (o_w, o_h), 0) </br>
+  draw = ImageDraw.Draw(mask) </br>
+    
+  # draw a polygon mask and grab the old pixels </br>
+  before_polygon = [(uv["x"], o_h - uv["y"]) for uv in before_face["uvs"]] </br>
+
+  draw.polygon(before_polygon, fill=255) </br>
+  face_image = Image.composite(pil_img, Image.new('RGB', (o_w, o_h)), mask) </br>
+
+  # keep only the pixels inside the mask </br>
+  face_image = face_image.crop(face_image.getbbox()) </br>
+
+  # paste face image to fit new packed UV coordinates </br>
+  after_polygon = [(uv["x"], uv["y"]) for uv in after_face["uvs"]] </br>
+
+  after_polygon = [(x, n_h - y) for x, y in after_polygon] </br>
+    
+  # find the upper left corner of the new face </br>
+  min_b_x = min([x for x, y in before_polygon]) </br>
+  min_b_y = min([y for x, y in before_polygon]) </br>
+  max_b_x = max([x for x, y in before_polygon]) </br>
+  max_b_y = max([y for x, y in before_polygon]) </br>
+  min_a_x = min([x for x, y in after_polygon]) </br>
+  min_a_y = min([y for x, y in after_polygon]) </br>
+  max_a_x = max([x for x, y in after_polygon]) </br>
+  max_a_y = max([y for x, y in after_polygon]) </br>
+
+  face_image = face_image.resize((max(max_a_x - min_a_x, 1), max(max_a_y - min_a_y, 1)), resample=Image.NEAREST) </br>
+    
+
+  final_img.paste(im=face_image, box=(min_a_x, min_a_y)) </br>
+
+export the final image as png </br>
+nal_img.save("final.png") </br>
+
        </code>
-      </div>
-      <div>
-         <h3>Python-only Code</h3>
-         <code>
-            from PIL import Image, ImageDraw </br>
-import json
-
-# read json from thingie.json </br>
-with open('coords.json') as json_file: </br>
-    data = json.load(json_file) </br>
-
-o_w =           data["orig_w"] </br>
-o_h =           data["orig_h"] </br>
-n_w =           data["new_w"] </br>
-n_h =           data["new_h"] </br>
-before_faces =  data["before"] </br>
-after_faces =   data["after"] </br>
-
-# create a PIL image from the blender image </br>
-pil_img = Image.open("unpacked.png") </br>
-
-final_img = Image.new('RGB', (n_w, n_h)) </br>
-# fill final_img with the average color of pil_img </br>
-average_color = pil_img.resize((1, 1)).resize((n_w, n_h)) </br>
-final_img.paste(average_color) </br>
-
-for before_face, after_face in zip(before_faces, after_faces): </br>
-    
-    mask = Image.new("L", (o_w, o_h), 0) </br>
-    draw = ImageDraw.Draw(mask) </br>
-    
-    # draw a polygon mask and grab the old pixels </br>
-    before_polygon = [(uv["x"], o_h - uv["y"]) for uv in before_face["uvs"]] </br>
-
-    draw.polygon(before_polygon, fill=255) </br>
-    face_image = Image.composite(pil_img, Image.new('RGB', (o_w, o_h)), mask) </br>
-
-    # keep only the pixels inside the mask </br>
-    face_image = face_image.crop(face_image.getbbox()) </br>
-
-    # paste face image to fit new packed UV coordinates </br>
-    after_polygon = [(uv["x"], uv["y"]) for uv in after_face["uvs"]] </br>
-
-    after_polygon = [(x, n_h - y) for x, y in after_polygon] </br>
-    
-    # find the upper left corner of the new face </br>
-    min_b_x = min([x for x, y in before_polygon]) </br>
-    min_b_y = min([y for x, y in before_polygon]) </br>
-    max_b_x = max([x for x, y in before_polygon]) </br>
-    max_b_y = max([y for x, y in before_polygon]) </br>
-    min_a_x = min([x for x, y in after_polygon]) </br>
-    min_a_y = min([y for x, y in after_polygon]) </br>
-    max_a_x = max([x for x, y in after_polygon]) </br>
-    max_a_y = max([y for x, y in after_polygon]) </br>
-
-    face_image = face_image.resize((max(max_a_x - min_a_x, 1), max(max_a_y - min_a_y, 1)), resample=Image.NEAREST) </br>
-    
-
-    final_img.paste(im=face_image, box=(min_a_x, min_a_y)) </br>
-
-# export the final image as png </br>
-final_img.save("final.png") </br>
-
-         </code>
-      </div>
-
     </div>
    </br>
 
