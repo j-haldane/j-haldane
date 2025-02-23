@@ -13,43 +13,43 @@ export class PortfolioSidenavComponent implements AfterViewInit, OnInit {
       category: "Unity",
       icon: "img/unity-ico.png",
       items: [
-        { displayName: "Composite Lightmaps", target: "/html/composite-lightmaps.html", thumb: "img/thumb/composite-lightmaps-thumb.png" },
-        { displayName: "Thief FP Controller", target: "/html/thief-fp-controller.html", thumb: "img/thumb/thief-fp-controller-thumb.png" },
+        { displayName: "Composite Lightmaps", target: "html/composite-lightmaps.html", thumb: "img/thumb/composite-lightmaps-thumb.png" },
+        { displayName: "Thief FP Controller", target: "html/thief-fp-controller.html", thumb: "img/thumb/thief-fp-controller-thumb.png" },
       ],
     },
     {
       category: "bpy",
       icon: "img/blender-ico.png",
       items: [
-        { displayName: "Easy Baker", target: "/html/easy-baker.html", thumb: "/img/thumb/easy-baker-thumb.png" },
-        { displayName: "UV Packer", target: "/html/uv-packer.html", thumb: "/img/thumb/uv-packer-thumb.png" },
+        { displayName: "Easy Baker", target: "html/easy-baker.html", thumb: "img/thumb/easy-baker-thumb.png" },
+        { displayName: "UV Packer", target: "html/uv-packer.html", thumb: "img/thumb/uv-packer-thumb.png" },
       ],
     },
     {
       category: "Python",
       icon: "img/python-ico.png",
       items: [
-        { displayName: "Palletizer", target: "/html/palettizer.html", thumb: "/img/thumb/palettizer-thumb.png" },
+        { displayName: "Palletizer", target: "html/palettizer.html", thumb: "img/thumb/palettizer-thumb.png" },
       ],
     },
     {
       category: "3D Art",
       icon: "img/3d-ico.png",
       items: [
-        { displayName: "Wizard's Mansion", target: "/html/wizards-mansion.html", thumb: "/img/thumb/house-thumb.jpg" },
-        { displayName: "My Apartment", target: "/img/apartment/apartment.png", thumb: "/img/thumb/apartment-thumb.png" },
-        { displayName: "Tech Truck", target: "/img/thumb/truck.gif", thumb: "/img/thumb/truck.gif" },
+        { displayName: "Wizard's Mansion", target: "html/wizards-mansion.html", thumb: "img/thumb/house-thumb.jpg" },
+        { displayName: "My Apartment", target: "img/apartment/apartment.png", thumb: "img/thumb/apartment-thumb.png" },
+        { displayName: "Tech Truck", target: "img/thumb/truck.gif", thumb: "img/thumb/truck.gif" },
       ],
     },
     {
       category: "2D Art",
       icon: "img/2d-ico.png",
       items: [
-        { displayName: "Windows End", target: "/img/art/windows-end.png", thumb: "/img/art/windows-end.png" },
-        { displayName: "Blue 1", target: "/img/art/blue1.png", thumb: "/img/art/blue1.png" },
-        { displayName: "Blue 2", target: "/img/art/blue2.png", thumb: "/img/art/blue2.png" },
-        { displayName: "RW", target: "/img/art/rw.png", thumb: "/img/art/rw.png" },
-        { displayName: "POV-Ray Vial", target: "/img/art/pov-ray-blood.gif", thumb: "/img/art/pov-ray-blood.gif" },
+        { displayName: "Windows End", target: "img/art/windows-end.png", thumb: "img/art/windows-end.png" },
+        { displayName: "Blue 1", target: "img/art/blue1.png", thumb: "img/art/blue1.png" },
+        { displayName: "Blue 2", target: "img/art/blue2.png", thumb: "img/art/blue2.png" },
+        { displayName: "RW", target: "img/art/rw.png", thumb: "img/art/rw.png" },
+        { displayName: "POV-Ray Vial", target: "img/art/pov-ray-blood.gif", thumb: "img/art/pov-ray-blood.gif" },
       ],
     },
     
