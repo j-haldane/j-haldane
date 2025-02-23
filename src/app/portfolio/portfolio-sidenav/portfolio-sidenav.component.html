@@ -1,0 +1,21 @@
+<div class="container" #container (scroll)="onScroll()">
+  @for (category of categories; track $index) {
+  <div class="perspective row" #linkElems></div>
+  <div class="flex-row gap-16 project-row" style="width: fit-content">
+    <div class="flex-col project-category">
+      <img [src]="category.icon" />
+      <span>{{ category.category }}</span>
+    </div>
+
+    @for (project of category.items; track $index) {
+      @if(project.thumb) {
+        <a class="flex-col project items-center gap-4" [href]="project.target" target="_blank">
+          <img class="thumb" [src]="project.thumb" />
+          <span>{{ project.displayName }}</span>
+        </a>
+      } 
+    }
+  </div>
+  }
+  <div class="perspective row" #linkElems></div>
+</div>
