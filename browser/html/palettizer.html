@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Palettizer</title>
+    <style>
+      p, li, h2 {
+         font-family: sans-serif;
+      }
+
+      img {
+         max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+   <h2>Palettizer.py</h2>
+    <p>A small python script meant to enforce a color pallete from one image to another.</p>
+    <p>I've found having a consistent color palette is extremely important to creating aesthetically pleasing low-poly designs.</p>
+    <p>Techniques used:</p>
+    <ul>
+      <li>Soft Light blending to get target image average color closer to palette colors. This ensures the next step doesn't floor or ceil the palette if the color difference is very stark.</li>
+      <li>Pillow's built-in putPallete after extracting color pallete from a source image.</li>
+    </ul>
+
+    <img src="/img/palettizer/palettizer-example.png"/>
+    </br>
+
+
+
+    <code>
+from PIL import Image, ImageStat </br>
+import numpy as np </br>
+import colorsys </br>
+ </br>
+def calculate_brightness(color): </br>
+    """Calculates the brightness of an RGB color. </br>
+ </br>
+    Args: </br>
+        color (tuple): RGB color tuple (R, G, B). </br>
+ </br>
+    Returns: </br>
+        float: Brightness value (between 0 and 1). </br>
+    """ </br>
+    r, g, b = color </br>
+    h, s, v = colorsys.rgb_to_hsv(r/255, g/255, b/255) </br>
+    return v </br>
+ </br>
+def create_color_palette_image(input_image, palette_width=1, colors=96): </br>
+ </br>
+    # Reduce the number of colors (posterize) for simpler palette extraction </br>
+    input_image = input_image.convert('P', palette=Image.ADAPTIVE) </br>
+    # img = img.convert('P') </br>
+ </br>
+    # Get the image's existing color palette as a list  </br>
+    img_palette = input_image.getpalette() </br>
+ </br>
+    color_tup = [] </br>
+    for i in range(0, len(img_palette), 3): </br>
+        # check if 0,0,0 </br>
+        color = img_palette[i:i+3] </br>
+        if color == (0,0,0): </br>
+            continue </br>
+ </br>
+        # convert color to tuple </br>
+        color_tup.append(tuple(color)) </br>
+ </br>
+    # Create a new image to represent the palette </br>
+    palette_img = Image.new('RGB', (color_tup.__len__(), 1)) </br>
+ </br>
+    # now we have a flat list of colors, we need to enumerate for each 3 (R,G,B) </br>
+    for i in range(0, len(color_tup)): </br>
+        palette_img.paste(color_tup[i], (i, 0, i+1, 1)) </br>
+ </br>
+    return palette_img </br>
+ </br>
+def apply_palette(input_image, palette_image): </br>
+    palette = palette_image.getpalette() </br>
+ </br>
+    output_image = Image.new('P', input_image.size) </br>
+ </br>
+    if palette is None: </br>
+        palette_image = palette_image.convert('P', palette=Image.ADAPTIVE, colors=256) </br>
+        palette = palette_image.getpalette() </br>
+ </br>
+    output_image.putpalette(palette) </br>
+ </br>
+    output_image.paste(input_image.quantize(palette=palette_image)) </br>
+    return output_image </br>
+ </br>
+ </br>
+def soft_light_blend(base, top): </br>
+    base_arr = np.array(base).astype(float) </br>
+    top_arr = np.array(top).astype(float) </br>
+     </br>
+    # normalize </br>
+    base_norm = base_arr / 255.0 </br>
+    top_norm = top_arr / 255.0 </br>
+     </br>
+    mask = top_norm <= 0.5 </br>
+    result = np.where(mask, </br>
+                      base_norm - (1 - 2 * top_norm) * base_norm * (1 - base_norm), </br>
+                      base_norm + (2 * top_norm - 1) * (np.sqrt(base_norm) - base_norm)) </br>
+     </br>
+    # clamp 0-255 range </br>
+    result = (result * 255).clip(0, 255).astype(np.uint8) </br>
+    return Image.fromarray(result) </br>
+ </br>
+def get_average_color(img, outputSize): </br>
+ </br>
+    average_color = ImageStat.Stat(img).mean </br>
+    average_image = Image.new('RGB', outputSize, tuple(map(int, average_color))) </br>
+ </br>
+    return average_image </br>
+ </br>
+ </br>
+# Example usage </br>
+input_path = 'tile_m'  # Replace with your image filename </br>
+palette_path = 'mahogany02'  # Replace with your image filename </br>
+output_path = input_path + palette_path + '-palette.png' </br>
+ </br>
+input_image = Image.open(input_path + '.png') </br>
+ </br>
+# make sure input_image is not RGBA </br>
+if input_image.mode == 'RGBA': </br>
+    input_image = input_image.convert('RGB') </br>
+ </br>
+palette_image = Image.open(palette_path + '.png') </br>
+ </br>
+average_palette_color_image = get_average_color(palette_image, input_image.size) </br>
+softlight_image = soft_light_blend(input_image, average_palette_color_image) </br>
+ </br>
+ </br>
+paletted_image = apply_palette(softlight_image, palette_image) </br>
+if paletted_image.mode == 'P': </br>
+    paletted_image = paletted_image.convert('RGB') </br>
+ </br>
+averaged = Image.blend(input_image, paletted_image, 1) </br>
+ </br>
+averaged.save(output_path) </br>
+print("completed!") </br>
+
+  </code>
+
+  </body>
+</html>
