@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Easy Baker</title>
+    <style>
+      .flr {
+         display: flex;
+         flex-direction: row;
+         gap: 16px;
+      }
+      .flc {
+         display: flex;
+         flex-direction: column;
+      }
+      p, h2, h3, li, a {
+         font-family: sans-serif;
+      }
+      img {
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Easy Baker</h2>
+    <a href="">View the code on Github</a>
+    <p>
+      Baking in blender is a really useful way to turn a UV map that <strong>looks</strong> good but is in reality a total
+      mess of overlapping UVs into something that looks good and is efficient.
+    </p>
+
+    <p>
+      Unfortunately baking is a time-consuming sequence of setting up shading nodes, texture
+      slots, making sure everything is selected correctly, setting up the bake job correctly, etc...
+    </p>
+
+    <p>
+      <a href="https://github.com/danielenger/Principled-Baker">Principled Baker</a> is a blender addon that addresses this. I have some issues with it:
+      <ul>
+        <li>It doesn't actually seem to work any more (at least on my version of Blender). I had to make 3-4 edits to the codebase to make it work.</li>
+        <li>Due to the rendering passes used for Cycles, Albedos are signicantly darker after being baked.</li>
+        <li>There's little control over how the mesh is unwrapped. You can only use techniques like Smart UV Project.</li>
+        <li>There are a lot of features that I will never use for my workflow.</li>
+      </ul>
+    </p>
+    <p>
+      I wrote my own addon to speed up the baking workflow:
+      <ol>
+        <li>Create your mesh and texture it. Eyeball the UVs to make it look nice. You can even use multiple materials! You will end up with a mesh that looks right, but with messy UVs:</li>
+        <img src="/img/easy-baker/messy-uv.jpg"/>
+        <li>Click "Prepare Unwrap". This puts your mesh into a state where you can immediately start unwrapping it using whichever techniques you like.</li>
+        <img src="/img/easy-baker/unwrap.jpg"/>
+        <li>When you're happy with your seams, click "Reapply and Bake". Profit! You now have a nice, clean Albedo with no overlap.</li>
+        <img src="/img/easy-baker/clean-uv.jpg"/>
+      </ol>
+    </p>
+    <p>It currently only works for Albedo. It also optionally supports alpha masking (this requires some numpy magic since the bake uses an Emission pass to avoid the aforementioned Albedo darkening issues).</p>
+    
+    
+  </body>
+</html>
