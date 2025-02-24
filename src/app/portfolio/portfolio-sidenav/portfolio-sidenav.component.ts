@@ -33,6 +33,13 @@ export class PortfolioSidenavComponent implements AfterViewInit, OnInit {
       ],
     },
     {
+      category: "Angular",
+      icon: "img/angular-ico.png",
+      items: [
+        { displayName: "This Site", target: "https://github.com/j-haldane/j-haldane", thumb: "img/thumb/website.png" },
+      ],
+    },
+    {
       category: "3D Art",
       icon: "img/3d-ico.png",
       items: [
@@ -50,6 +57,12 @@ export class PortfolioSidenavComponent implements AfterViewInit, OnInit {
         { displayName: "Blue 2", target: "img/art/blue2.png", thumb: "img/art/blue2.png" },
         { displayName: "RW", target: "img/art/rw.png", thumb: "img/art/rw.png" },
         { displayName: "POV-Ray Vial", target: "img/art/pov-ray-blood.gif", thumb: "img/art/pov-ray-blood.gif" },
+      ],
+    },
+    {
+      category: "",
+      icon: "img/unknown-ico.png",
+      items: [
       ],
     },
     

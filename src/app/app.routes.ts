@@ -6,10 +6,6 @@ import { PortfolioComponent } from './portfolio/portfolio.component';
 export const routes: Routes = [
     {
         path: "",
-        redirectTo: "/about", pathMatch: 'full'
-    },
-    {
-        path: "about",
         component: AboutComponent
     },
     {
@@ -22,6 +18,6 @@ export const routes: Routes = [
     },
     {
         path: "**",
-        redirectTo: "/about"
+        redirectTo: "/"
     },
 ];
